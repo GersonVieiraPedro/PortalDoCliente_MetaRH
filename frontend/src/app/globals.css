@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #444444;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #e5e7eb;
+    --foreground: #e5e7eb;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Inter", sans-serif;
+  cursor: default;
+}
+
+.MenuOpen {
+  overflow: hidden;
+  left: 0;
+  transition: left 0.8s ease-in-out, opacity 1s ease-in-out;
+  opacity: 1;
+}
+
+.MenuClose {
+  padding: 0;
+  left: -35vh;
+  opacity: 0;
+  overflow: hidden;
+  transition: left 0.8s ease-in-out, opacity 1s ease-in-out;
+  transition-delay: 0s, 0.3s; /* primeiro some o conteúdo, depois começa o slide */
+}
+
+.rounded-100 {
+  border-radius: 100%;
+}
+
+.Font-micro {
+  font-size: 8px;
+}
+
+.List-border li {
+  border-width: 0 0 1px 0; /* só a borda de baixo */
+  border-style: solid; /* define o estilo da borda */
+  border-color: #cfcece; /* cor da borda */
+  padding: 8px; /* opcional: espaço entre os itens */
+}
+
+.h-80vh {
+  height: 86.5vh;
+}
+
+.bg-cinza-transparente:hover {
+  background-color: #f3f4f64b;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+td {
+  border: solid 1px rgb(220, 220, 220);
+}
+
+th {
+  border: solid 1px rgb(206, 206, 206);
+  border-collapse: separate;
+  box-shadow: 0px 5px 5px -1px rgba(177, 177, 177, 0.315);
+}
+
+.bg-black-transparente {
+  background-color: #000000a2;
+}
+.shandow-r-transparente {
+  box-shadow: 7px -1px 10px 1px rgba(0, 0, 0, 0.59);
+}
+.bg-gradiante {
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(203, 203, 255, 1) 100%
+  );
+}

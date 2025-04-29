@@ -10,3 +10,9 @@
 .env
 
 *.db
+
+**/backend/src/Tabelas/
+
+**/backend/src/backend/__pycache__/
+
+*.pyc

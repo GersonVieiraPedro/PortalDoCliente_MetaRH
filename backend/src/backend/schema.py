@@ -53,3 +53,10 @@ class AtualizarUsuarios(BaseModel):
 
 class AtualizarUsuariosLista(AtualizarUsuarios):
     ID: int
+
+
+
+class Organizacao(BaseModel):
+   
+    CNPJ: Optional[str] = None
+    CodigoCliente: Optional[str] = None

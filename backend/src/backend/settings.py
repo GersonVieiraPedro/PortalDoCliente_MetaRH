@@ -15,4 +15,13 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str
     EXPIRES_IN_MINUTES: int
+    ACCOUTE_URL: str
+    CONTAINER: str
+    KEY: str
+    DRIVER: str
+    SERVER: str
+    DATABASE: str
+    USER: str
+    PASSWORD: str
+
 

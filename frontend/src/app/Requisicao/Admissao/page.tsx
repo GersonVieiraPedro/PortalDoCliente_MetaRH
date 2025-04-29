@@ -14,7 +14,7 @@ export default function Admissao() {
             </label>
 
             <select
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 rounded-md cursor-pointer inset-shadow-sm"
               name="TipoVaga"
               id="1"
             >
@@ -34,7 +34,7 @@ export default function Admissao() {
             </label>
 
             <select
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="Cargo"
               id="2"
             >
@@ -52,7 +52,7 @@ export default function Admissao() {
 
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="CentroDeCusto"
               id="3"
             ></input>
@@ -64,7 +64,7 @@ export default function Admissao() {
 
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="SretorDeTrabalho"
               id="4"
             ></input>
@@ -75,7 +75,7 @@ export default function Admissao() {
             </label>
 
             <select
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="ModalidadeDeTrabalho"
               id="5"
             >
@@ -92,7 +92,7 @@ export default function Admissao() {
             </label>
 
             <select
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="ModalidadeDeTrabalho"
               id="6"
             >
@@ -109,7 +109,7 @@ export default function Admissao() {
             </label>
 
             <select
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name=""
               id="7"
             >
@@ -136,7 +136,7 @@ export default function Admissao() {
             </label>
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="LocalDeTrabalho"
               id="8"
             />
@@ -147,7 +147,7 @@ export default function Admissao() {
             <label className="text-gray-800 font-medium">Salário</label>
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="Salario"
               id="9"
             />
@@ -159,7 +159,7 @@ export default function Admissao() {
               Descrição do Cargo
             </label>
             <textarea
-              className="p-1 border border-gray-200 rounded-md cursor-pointer min-h-[100px]"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer min-h-[100px]"
               name="DescricaoCargo"
               id="10"
             ></textarea>
@@ -170,7 +170,7 @@ export default function Admissao() {
             <label className="text-gray-800 font-medium">Nome</label>
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="Nome"
               id="11"
             />
@@ -181,7 +181,7 @@ export default function Admissao() {
             <label className="text-gray-800 font-medium">CPF</label>
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="CPF"
               id="12"
             />
@@ -194,7 +194,7 @@ export default function Admissao() {
             </label>
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="MotivoSubstituicao"
               id="13"
             />
@@ -216,7 +216,7 @@ export default function Admissao() {
             </div>
 
             <textarea
-              className="p-1 border border-gray-200 rounded-md cursor-pointer min-h-[100px]"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer min-h-[100px]"
               name="DescricaoCargo"
               id="10"
             ></textarea>
@@ -233,7 +233,7 @@ export default function Admissao() {
             <label className="text-gray-800 font-medium">Nome</label>
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="NomeRH"
               id="15"
             />
@@ -243,7 +243,7 @@ export default function Admissao() {
             <label className="text-gray-800 font-medium">E-mail</label>
             <input
               type="email"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="EmailRH"
               id="16"
             />
@@ -253,7 +253,7 @@ export default function Admissao() {
             <label className="text-gray-800 font-medium">Telefone</label>
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="TelefoneRH"
               id="17"
             />
@@ -270,7 +270,7 @@ export default function Admissao() {
             <label className="text-gray-800 font-medium">Nome</label>
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="NomeGestor"
               id="18"
             />
@@ -280,7 +280,7 @@ export default function Admissao() {
             <label className="text-gray-800 font-medium">E-mail</label>
             <input
               type="email"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="EmailGestor"
               id="19"
             />
@@ -290,7 +290,7 @@ export default function Admissao() {
             <label className="text-gray-800 font-medium">Telefone</label>
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="TelefoneGestor"
               id="20"
             />
@@ -307,7 +307,7 @@ export default function Admissao() {
             <label className="text-gray-800 font-medium">Nome</label>
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="NomePrimeiroDia"
               id="21"
             />
@@ -317,7 +317,7 @@ export default function Admissao() {
             <label className="text-gray-800 font-medium">Departamento</label>
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="DepartamentoPrimeiroDia"
               id="22"
             />
@@ -327,7 +327,7 @@ export default function Admissao() {
             <label className="text-gray-800 font-medium">Horário</label>
             <input
               type="text"
-              className="p-1 border border-gray-200 rounded-md cursor-pointer"
+              className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
               name="HorarioPrimeiroDia"
               id="23"
             />

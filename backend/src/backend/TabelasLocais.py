@@ -1,11 +1,9 @@
 from datetime import datetime, date
-import os
 import json
 import pandas as pd
 from azure.storage.filedatalake import DataLakeServiceClient
 from io import StringIO
-import schedule
-import time
+
 from .settings import Settings
 import numpy as np
 
@@ -44,6 +42,8 @@ def SalvarArquivosLocal():
        
     baixar_arquivo_azure('workspace/pipedrive/persons.csv', 'person')
     baixar_arquivo_azure('workspace/pipedrive/organizations.csv', 'organizations')
+
+
 
 
 

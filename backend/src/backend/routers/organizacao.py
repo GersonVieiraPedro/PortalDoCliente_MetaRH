@@ -1,6 +1,7 @@
 from http import HTTPStatus
 import json
 from typing import List
+from backend.TabelasGI import TabelaFuncionarios
 from backend.TabelasLocais import  limpar_dataframe
 from fastapi import APIRouter
 from fastapi import HTTPException, Depends, Body
@@ -100,7 +101,7 @@ def Tabela_Person_Pipedrive(
 
 
 @router.post("/empressas/")
-def Dados_Empresas_Que_Tenho_Acesso(
+def Dados_Empresas_Que_Tenho_Acesso(    
     Email: str = None,
     IDOrganizacao: str = None,
     CNPJ: list[str] = None
@@ -179,3 +180,26 @@ def Dados_Empresas_Que_Tenho_Acesso(
             status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
             detail={"status": "Erro", "mensagem": str(e)}
         )
+    
+@router.post('/Funcionarios')
+def Funcionarios(
+    CNPJ: List[str] | None = None,
+    CodigoCliente: List[int] | None = None,
+):
+    # Chamada correta com base nos parâmetros
+    resultado = TabelaFuncionarios(CNPJ=CNPJ, CodigoCliente=CodigoCliente)
+
+    if not resultado.empty:
+        return {
+            "status": "Sucesso",
+            "mensagem": "Registros encontrados!",
+            "tabela": resultado.to_dict(orient="records")
+        }
+    else:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail={"status": "Erro", "mensagem": "Nenhum registro encontrado"}
+        )
+
+
+ 

@@ -127,7 +127,7 @@ export function TabelaUsuariosAcessos() {
           titulo="Mensagem de Alerta"
           mensagem={
             <div className="grid h-full w-full justify-center items-center">
-              <table>
+              <table> 
                 <thead>
                   <tr className="w-full bg-gray-200 p-2 ">
                     <th className=" w-full p-2 px-20">ID</th>
@@ -235,10 +235,7 @@ export function TabelaUsuariosAcessos() {
         </div>
 
         <table className=" p-2 w-full h-full  border border-gray-100">
-          <thead className="sticky top-5 h-10 w-full">
-            <div className="relative w-full">
-              <div className="absolute w-lvw h-15 z-0 -top-5  bg-white"></div>
-            </div>
+          <thead className="sticky top-0 h-full w-full z-10 bg-white shadow ">
             <tr className="h-10 bg-gray-200 relative z-10 p-2">
               <th className="h-10 p-2 w-10">Ativo</th>
               <th className="p-2 ">ID</th>

@@ -1,4 +1,57 @@
+'use client';
+
+import { useEffect, useState } from "react";
+import { MinhasEmpresas, MeusFuncionarios } from "./MeusDados";
+import { VerificarEmail } from "@/src/lib/decode";
+import { getToken } from "@/src/lib/token";
+
 export default function Admissao() {
+  const [dados, setDados] = useState<any>(null)
+  const [funcionario, setFuncionario] = useState<any>(null)
+  const [email, setEmail] = useState<string | null>("") ;
+  const [token, setToken] = useState<string>("");
+
+  useEffect(()=>{
+    const CarregarDados = async ()=>{
+
+      const varToken = await getToken()
+      setToken(varToken)
+
+      const varEmail = await VerificarEmail(varToken)
+      setEmail(varEmail)
+
+      const varDados = await MinhasEmpresas(varEmail)
+      setDados(varDados)
+
+      console.log('token: ', varToken)
+      console.log('email: ', varEmail)
+      console.log('Dados: ', varDados)
+    }
+
+    CarregarDados()
+    
+  },[])
+
+  useEffect(()=>{
+
+    //Transofrmando os objetos em lista distantas de CNPJ e CodigoCliente
+    const CNPJS = [...new Set(dados?.map((d: { CNPJ: any }) => d.CNPJ))]
+    const CodigoCliente = [...new Set(dados?.map((d: { ['COD Contrato G.I']: any }) => d['COD Contrato G.I']))]
+
+    console.log('CNPJS :', CNPJS)
+    console.log('Cod :', CodigoCliente)
+    const Funcionarios = async () =>{
+      const varFuncionarios = await MeusFuncionarios(CNPJS,CodigoCliente)
+      setFuncionario(varFuncionarios)
+      console.log(varFuncionarios)
+    }
+    Funcionarios()
+    
+
+  },[dados])
+
+
+
   return (
     <div className="bg-gray-200 ml-15 mt-15 max-w-dvw h-auto p-5">
       <div className="bg-white h-full max-w-dvw rounded-md border border-gray-300 ">

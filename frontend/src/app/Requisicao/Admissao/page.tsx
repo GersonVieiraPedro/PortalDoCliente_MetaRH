@@ -128,12 +128,12 @@ export default function Admissao() {
   }, [motivoSelecionado]);
 
   useEffect(() => {
-    //console.log(funcaos)
-  }, [funcaos]);
+    console.log(state);
+  }, [state]);
 
   useEffect(() => {
-    //console.log(centrosCustos )
-  }, [centrosCustos]);
+    console.log("Apos Atualização de state :", prescisaEPI);
+  }, [prescisaEPI]);
 
   return (
     <div className="bg-gray-200 ml-15 mt-15 max-w-dvw h-auto p-5">
@@ -147,6 +147,9 @@ export default function Admissao() {
         </h2>
         <Form action={formAction}>
           <div className="grid grid-cols-3 gap-5 p-5 text-gray-500">
+            {/* campo oculto que recebe o e-mail do solicitante */}
+            <input type="hidden" name="Email" value={email || ""} />
+
             <div className=" justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">Tipo de Vaga</label>
 
@@ -154,6 +157,7 @@ export default function Admissao() {
                 className="p-1 border border-gray-200 rounded-md cursor-pointer inset-shadow-sm"
                 name="TipoVaga"
                 id="1"
+                required
               >
                 <option value=" "></option>
                 <option value="Temporario">Temporário</option>
@@ -173,29 +177,31 @@ export default function Admissao() {
                 name="Cargo"
                 id="2"
                 onChange={(e) => setFuncaoSelecionada(e.target.value)}
+                required
               >
                 <option value=""></option>
-                {funcaos !== null &&
-                  funcaos?.map((funcao: string, index: number) => (
-                    <option key={index} value={funcao}>
-                      {funcao}
-                    </option>
-                  ))}
-
                 <option
                   className="bg-gray-100 hover:bg-gray-200"
                   value="ADICIONAR NOVO CARGO"
                 >
                   ADICIONAR NOVO CARGO
                 </option>
+
+                {funcaos !== null &&
+                  funcaos?.map((funcao: string, index: number) => (
+                    <option key={index} value={funcao}>
+                      {funcao}
+                    </option>
+                  ))}
               </select>
               {funcaoSelecionada === "ADICIONAR NOVO CARGO" && (
                 <input
                   className="absolute bg-white left-px bottom-px h-[53%] rounded-md w-[95%] pl-2 outline-gray-200 "
                   placeholder="Digite o Novo Cargo..."
                   type="text"
-                  name="NovaCargo"
-                  id="NovaCargo"
+                  name="NovoCargo"
+                  id="NovoCargo"
+                  required
                 />
               )}
             </div>
@@ -209,21 +215,21 @@ export default function Admissao() {
                 name="CentroCusto"
                 id="3"
                 onChange={(e) => setCentroSelecionado(e.target.value)}
+                required
               >
                 <option value=""></option>
-
-                {Array.isArray(centrosCustos) &&
-                  centrosCustos.map((centro: string, index: number) => (
-                    <option key={index} value={centro}>
-                      {centro}
-                    </option>
-                  ))}
                 <option
                   className="bg-gray-100 hover:bg-gray-200"
                   value="ADICIONAR NOVO CENTRO"
                 >
                   ADICIONAR NOVO CENTRO
                 </option>
+                {Array.isArray(centrosCustos) &&
+                  centrosCustos.map((centro: string, index: number) => (
+                    <option key={index} value={centro}>
+                      {centro}
+                    </option>
+                  ))}
               </select>
               {centroSelecionado === "ADICIONAR NOVO CENTRO" && (
                 <input
@@ -245,6 +251,7 @@ export default function Admissao() {
                 className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
                 name="SetorTrabalho"
                 id="4"
+                required
               >
                 <option value=" "></option>
                 <option value="FINANCEIRO">FINANCEIRO</option>
@@ -282,6 +289,7 @@ export default function Admissao() {
                 onChange={(e) => setMotivoSelecionado(e.target.value)}
                 name="MotivoContratacao"
                 id="6"
+                required
               >
                 <option value=" "></option>
                 <option value="EXPANÇÂO">EXPANÇÃO</option>
@@ -299,6 +307,7 @@ export default function Admissao() {
                 className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
                 name="EscalaTrabalho"
                 id="7"
+                required
               >
                 <option value=" "></option>
                 <option value="Escala 2x2">Escala 2x2</option>
@@ -316,7 +325,6 @@ export default function Admissao() {
                 <option value="Escala 40×48">Escala 40×48</option>
               </select>
             </div>
-
             <div className="justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">
                 Local de Trabalho
@@ -326,9 +334,9 @@ export default function Admissao() {
                 className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer"
                 name="LocalTrabalho"
                 id="8"
+                required
               />
             </div>
-
             <div className="justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">Salário</label>
               <NumericFormat
@@ -341,9 +349,9 @@ export default function Admissao() {
                 fixedDecimalScale
                 decimalScale={2}
                 allowNegative={false}
+                required
               />
             </div>
-
             <div className="col-span-3 justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">
                 Descrição do Cargo
@@ -352,9 +360,9 @@ export default function Admissao() {
                 className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer min-h-[100px]"
                 name="DescricaoCargo"
                 id="10"
+                required
               ></textarea>
             </div>
-
             <div className="col-span-3 justify-start grid grid-cols-1 items-center">
               <div className="flex gap-2 items-center">
                 <input
@@ -362,25 +370,38 @@ export default function Admissao() {
                   className="cursor-pointer h-4 w-10"
                   name="PrecisaEPI"
                   id="11"
-                  /*
-                  defaultChecked={prescisaEPI}
-                  onChange={(e) => {
-                    setPrecisaEPI(prescisaEPI!);
-                    console.log(e.target.value);
-                  }}
-                  */
+                  checked={prescisaEPI}
+                  onChange={(e) => setPrecisaEPI(e.target.checked)}
                 />
                 <label className="text-gray-800 font-medium ">
                   EPI, Uniforme e Crachá (somente se for aplicado para esta
                   contratação)
                 </label>
               </div>
-
-              <textarea
-                className="p-1 border border-gray-200 inset-shadow-sm rounded-md cursor-pointer min-h-[100px]"
-                name="DescricaoEPI"
-                id="12"
-              ></textarea>
+              <AnimatePresence>
+                <motion.div
+                  key="AnimationDescricaoEPI"
+                  initial={{ backgroundColor: "#f3f4f6", height: "5vh" }}
+                  animate={{
+                    backgroundColor: prescisaEPI ? "#ffffff" : "#f3f4f6",
+                    height: prescisaEPI ? "15vh" : "5vh",
+                  }}
+                  exit={{ backgroundColor: "#f3f4f6", height: "5vh" }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="grid grid-cols-3 w-[90vw]"
+                >
+                  <textarea
+                    disabled={!prescisaEPI}
+                    className={`col-span-3 p-2 border border-gray-200 inset-shadow-sm rounded-md resize-none focus:outline-none  ${
+                      prescisaEPI
+                        ? "bg-white"
+                        : "bg-gray-100 cursor-not-allowed"
+                    }`}
+                    name="DescricaoEPI"
+                    placeholder="Descreva os EPIs necessários"
+                  ></textarea>
+                </motion.div>
+              </AnimatePresence>
             </div>
             <AnimatePresence>
               {motivoSelecionado === "SUBSTITUIÇÃO" && (
@@ -443,14 +464,12 @@ export default function Admissao() {
                 </motion.div>
               )}
             </AnimatePresence>
-
             <div className="col-span-3">
               <hr className="text-gray-200" />
               <h2 className="text-gray-800 font-bold mt-5 mb-2">
                 RH Responsável
               </h2>
             </div>
-
             <div className="justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">Nome</label>
               <input
@@ -460,7 +479,6 @@ export default function Admissao() {
                 id="16"
               />
             </div>
-
             <div className="justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">E-mail</label>
               <input
@@ -470,7 +488,6 @@ export default function Admissao() {
                 id="17"
               />
             </div>
-
             <div className="justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">Telefone</label>
               <input
@@ -481,14 +498,12 @@ export default function Admissao() {
                 ref={inputTelefoneRHResponsavel}
               />
             </div>
-
             <div className="col-span-3">
               <hr className="text-gray-200" />
               <h2 className="text-gray-800 font-bold mt-5 mb-2">
                 Gestor para Validação do Ponto
               </h2>
             </div>
-
             <div className="justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">Nome</label>
               <input
@@ -498,7 +513,6 @@ export default function Admissao() {
                 id="19"
               />
             </div>
-
             <div className="justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">E-mail</label>
               <input
@@ -508,7 +522,6 @@ export default function Admissao() {
                 id="20"
               />
             </div>
-
             <div className="justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">Telefone</label>
               <input
@@ -519,14 +532,12 @@ export default function Admissao() {
                 ref={inputGestorPonto}
               />
             </div>
-
             <div className="col-span-3">
               <hr className="text-gray-200" />
               <h2 className="text-gray-800 font-bold mt-5 mb-2">
                 No Primeiro Dia Deverá Procurar Por Quem?
               </h2>
             </div>
-
             <div className="justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">Nome</label>
               <input
@@ -536,7 +547,6 @@ export default function Admissao() {
                 id="22"
               />
             </div>
-
             <div className="justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">Departamento</label>
               <input
@@ -546,7 +556,6 @@ export default function Admissao() {
                 id="23"
               />
             </div>
-
             <div className="justify-start grid grid-cols-1 items-center">
               <label className="text-gray-800 font-medium">Horário</label>
               <input
@@ -560,7 +569,10 @@ export default function Admissao() {
           </div>
 
           <div className="flex justify-center mt-8 mb-4 p-5">
-            <button className="bg-gray-500 w-2xl text-white px-6 py-2 rounded-md hover:bg-gray-600 transition cursor-pointer">
+            <button
+              type="submit"
+              className="bg-gray-500 w-2xl text-white px-6 py-2 rounded-md hover:bg-gray-600 transition cursor-pointer"
+            >
               Enviar Requisição
             </button>
           </div>

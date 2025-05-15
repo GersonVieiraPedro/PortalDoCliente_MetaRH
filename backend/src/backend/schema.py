@@ -60,3 +60,33 @@ class Organizacao(BaseModel):
    
     CNPJ: Optional[str] = None
     CodigoCliente: Optional[str] = None
+
+
+class AdmissaoSchema(BaseModel):
+    TipoVaga: str
+    Cargo: str
+    CentroCusto: str
+    SetorTrabalho: str
+    ModalidadeTrabalho: str
+    MotivoContratacao: str
+    EscalaTrabalho: str
+    LocalTrabalho: str
+    Salario: str
+    DescricaoCargo: str
+    PrecisaEPI: Optional[bool] = None
+    DescricaoEPI: Optional[str] = None
+    NomeSubstituido: Optional[str] = None
+    CPFSubstituido: Optional[str] = None
+    MotivoSubstituido: Optional[str] = None
+    NomeResponsavelRH: str
+    EmailResponsavelRH: str
+    TelefoneResponsavelRH: str
+    NomeGestorPonto: str
+    EmailGestorPonto: str
+    TelefoneGestorPonto: str
+    NomePessoaPrimeiroDia: str
+    DepartamentoPrimeiroDia: str
+    HorarioPrimeiroDia: str
+    Proprietario: Optional[str] = None
+    DataInicio: Optional[datetime] = None
+    DataEncerramento: Optional[datetime] = None

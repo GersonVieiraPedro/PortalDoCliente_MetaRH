@@ -1,10 +1,39 @@
 "use client";
 
+import { VerificarNome } from "@/src/lib/decode";
+import { getToken } from "@/src/lib/token";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import router from "next/router";
+import { ReactNode, useEffect, useRef, useState } from "react";
+
+type NavegadorProps = {
+  Nome: string;
+  Notificacao: ReactNode;
+};
 
 export function Navegador() {
   const [openNotif, setOpenNofif] = useState(false);
+  const [token, setToken] = useState<string>("");
+  const [NomeUsuario, setNomeUsuario] = useState<string>("");
+
+  useEffect(() => {
+    const token = getToken();
+
+    setToken(token);
+
+    //console.log("token :", token);
+    if (!token) {
+      router.push("/Login");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      const Nome = VerificarNome(token);
+      setNomeUsuario(Nome || "");
+    }
+  }, [token]);
 
   const nomeDiretorio = usePathname();
 
@@ -31,26 +60,7 @@ export function Navegador() {
           <i className="bi bi-caret-right text-2xl"></i>
           <h2>{titulo()}</h2>
         </div>
-        <div className="h-full w-full ">
-          <div className="flex rounded-md border border-gray-100 w-full items-center">
-            <input
-              className=" h-10 border border-gray-200 bg-white w-full p-2 outline-gray-300"
-              type="text"
-              name=""
-              id="ValorFiltro"
-              placeholder="Pesquisar"
-              ref={ValorFiltradoRef}
-            />
-
-            <button
-              onClick={() => {
-                const Tipo = TipoFiltroRef.current?.value || "";
-                const Valor = ValorFiltradoRef.current?.value || "";
-              }}
-              className="bi bi-search h-10 w-15 bg-gray-200 cursor-pointer hover:bg-gray-300"
-            ></button>
-          </div>
-        </div>
+        <div className="h-full w-full "></div>
         <div className="h-full w-full justify-end pr-10 flex items-center gap-4 relative">
           {openNotif && (
             <div
@@ -93,13 +103,15 @@ export function Navegador() {
             <i className="bi bi-bell-fill"></i>
           </button>
 
-          <div className="border-l pl-5 flex items-center gap-4 ">
-            <h5 className="">Gerson V.</h5>
-            <img
-              className="object-contain h-10 w-10 rounded-full"
-              src="/Foto.png"
-              alt=""
-            />
+          <div className="border-l pl-5 flex items-center gap-4 cursor-pointer">
+            <h5 className="">{NomeUsuario}</h5>
+            <Link href="/Configuracao">
+              <img
+                className="object-contain h-10 w-10 rounded-full"
+                src="/UsuarioAvatar.jpg"
+                alt=""
+              />
+            </Link>
           </div>
         </div>
       </div>

@@ -4,11 +4,13 @@ import { MenuLateral } from "../components/MenuLateral";
 import { Navegador } from "../components/Navegador";
 import { use, useEffect, useState } from "react";
 import { getToken } from "../lib/token";
+import { VerificarNome } from "../lib/decode";
 
 export default function Home() {
   const router = useRouter();
 
   const [token, setToken] = useState<string>("");
+  const [NomeUsuario, setNomeUsuario] = useState<string>("");
 
   useEffect(() => {
     const token = getToken();
@@ -20,6 +22,13 @@ export default function Home() {
       router.push("/Login");
     }
   }, []);
+
+  useEffect(() => {
+    if (token) {
+      const Nome = VerificarNome(token);
+      setNomeUsuario(Nome || "");
+    }
+  }, [token]);
 
   return (
     <div>

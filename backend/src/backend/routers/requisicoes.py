@@ -23,6 +23,8 @@ def Cadastrar_Admissao(
         select(TB_Usuarios).where(TB_Usuarios.Email == Email)
     )
 
+    print(UsuarioDB)
+    print(Admissao)
     
     if(UsuarioDB == None):
         return Resposta(status='Erro', mensagem='Usúario não cadastrado')

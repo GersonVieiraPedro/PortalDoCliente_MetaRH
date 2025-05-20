@@ -1,39 +1,17 @@
 "use client";
-
-import { VerificarNome } from "@/src/lib/decode";
-import { getToken } from "@/src/lib/token";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import router from "next/router";
-import { ReactNode, useEffect, useRef, useState } from "react";
-
-type NavegadorProps = {
-  Nome: string;
-  Notificacao: ReactNode;
-};
+import { useEffect, useRef, useState } from "react";
+import { useUsuario } from "@/src/app/contexts/UsuarioContext";
 
 export function Navegador() {
   const [openNotif, setOpenNofif] = useState(false);
-  const [token, setToken] = useState<string>("");
-  const [NomeUsuario, setNomeUsuario] = useState<string>("");
+  const { usuario } = useUsuario();
 
-  useEffect(() => {
-    const token = getToken();
+  const [nomeUsuario, setNomeUsuario] = useState<string>("");
 
-    setToken(token);
-
-    //console.log("token :", token);
-    if (!token) {
-      router.push("/Login");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (token) {
-      const Nome = VerificarNome(token);
-      setNomeUsuario(Nome || "");
-    }
-  }, [token]);
+  const [existeImagem, setExisteImagem] = useState<any>(null);
 
   const nomeDiretorio = usePathname();
 
@@ -104,11 +82,15 @@ export function Navegador() {
           </button>
 
           <div className="border-l pl-5 flex items-center gap-4 cursor-pointer">
-            <h5 className="">{NomeUsuario}</h5>
+            <h5 className="">{usuario?.Nome}</h5>
             <Link href="/Configuracao">
               <img
                 className="object-contain h-10 w-10 rounded-full"
-                src="/UsuarioAvatar.jpg"
+                src={
+                  usuario?.existe && usuario?.ID
+                    ? `https://storagecorpprod001.blob.core.windows.net/portal-web/fotos/usuarios/${usuario?.ID}.png`
+                    : "/UsuarioAvatar.jpg"
+                }
                 alt=""
               />
             </Link>

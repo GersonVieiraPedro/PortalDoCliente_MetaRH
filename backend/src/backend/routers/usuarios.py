@@ -73,8 +73,8 @@ def Listar_Usuarios(
     Inicio: int = 0,
     TipoFiltro: str = None,
     Filtro: str = None,
-    session=Depends(AtivarSession),
-    usuario=Depends(UsuarioAtual)
+    session=Depends(AtivarSession)
+   # usuario=Depends(UsuarioAtual)
 ):
     query = select(TB_Usuarios)
 
@@ -97,7 +97,7 @@ def Listar_Usuarios(
     elif TipoFiltro == "ID":
         query = query.filter(TB_Usuarios.ID.cast(String).contains(Filtro))
 
-    # Paginação
+    # Paginação 
     query = query.offset(Inicio).limit(Limite)
 
     # Executa e coleta os resultados

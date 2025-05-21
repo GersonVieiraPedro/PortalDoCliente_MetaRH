@@ -1,19 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import image from "next/image";
+
 import Link from "next/link";
 import { VerificarTipoAcesso } from "@/src/lib/decode";
-import { get } from "http";
-import { getToken } from "@/src/lib/token";
+import { useUsuario } from "@/src/app/contexts/UsuarioContext";
 
 export function MenuLateral() {
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState("");
   const [acesso, setAcesso] = useState("");
-
+  const { usuario, setUsuario } = useUsuario();
   useEffect(() => {
-    const token = getToken();
+    const token = usuario.token;
 
     if (token) {
       const vAcesso = VerificarTipoAcesso(token);

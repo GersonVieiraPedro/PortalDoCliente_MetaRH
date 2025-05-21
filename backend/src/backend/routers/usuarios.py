@@ -9,7 +9,7 @@ from sqlalchemy.future import select
 from ..models import TB_Usuarios
 from ..schema import AtualizarUsuariosLista, ListaUsuarios, Resposta, UsuarioPublico, UsuarioSchema, UsarioLogin, Token, AtualizarUsuarios, RespostaLista
 from ..database import AtivarSession
-from ..security import Criar_Hash, Criar_Token_Acesso, UsuarioAtual, Verificar_Senha
+from ..security import Criar_Hash, Criar_Token_Acesso, UsuarioAtual, UsuarioAtualAdmin, Verificar_Senha
 
 
 router = APIRouter(prefix="/usuarios", tags=["Usuários"])
@@ -57,8 +57,8 @@ def Entrar(usuario: UsarioLogin, session = Depends(AtivarSession)):
 
     if not UsuarioDB or not Verificar_Senha(usuario.senha, UsuarioDB.Senha)  :
         raise HTTPException(status_code=HTTPStatus.CONFLICT, detail={
-            "titulo": "Erro",
-            "msg": "Usuário ou senha inválidos!"
+            "status": "Erro",
+            "mensagem": "Usuário ou senha inválidos!"
         })
     
     access_token = Criar_Token_Acesso(data={"nome": UsuarioDB.Nome , "email": usuario.email, "sub": UsuarioDB.TipoAcesso})
@@ -111,7 +111,7 @@ def Listar_Usuarios(
 @router.patch('/atualizar/lista', response_model=List[RespostaLista])
 def Lista_De_Usuarios(
     session= Depends(AtivarSession),
-    user=Depends(UsuarioAtual),
+    user=Depends(UsuarioAtualAdmin),
     listaUsuarios: List[AtualizarUsuariosLista]= Body(...)
 ):
     Lista = []
@@ -159,15 +159,40 @@ def Usuario_ID(
 
     if not UsuarioDB:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail='Usuário não encontrado'
+            status_code=HTTPStatus.NOT_FOUND, detail={
+                "status": "Erro",
+                "mensagem": "Usuário não encontrado !"
+    }
         )
     
-    for key, value in usuario.model_dump(exclude_unset=True).items():
-        setattr(UsuarioDB, key, value)
+    if usuario.SenhaAntiga:
+        if not Verificar_Senha(usuario.SenhaAntiga, UsuarioDB.Senha):
+            raise HTTPException(status_code=HTTPStatus.CONFLICT, detail={
+                "status": "Erro",
+                "mensagem": "A Senha Atual não corresponde com a salva!"
+            })
+        else:
+            senha_nova_texto_claro = usuario.SenhaNova
+            senha_hasheada = Criar_Hash(senha_nova_texto_claro)
+            UsuarioDB.Senha = senha_hasheada
+
+    # Atualiza outras propriedades do usuário que vieram na requisição
+    campos_para_atualizar = usuario.model_dump(
+        exclude={
+            "SenhaAntiga",
+            "SenhaNova",
+            "ID" # Exclua o ID se ele não deve ser alterado pelo usuário
+        },
+        exclude_unset=True
+    )
+
+    for key, value in campos_para_atualizar.items():
+        if hasattr(UsuarioDB, key): # Garante que a propriedade existe no modelo do DB
+            setattr(UsuarioDB, key, value)
 
     session.add(UsuarioDB)
     session.commit()
     session.refresh(UsuarioDB)
 
-    return UsuarioDB        
+    return UsuarioDB
 

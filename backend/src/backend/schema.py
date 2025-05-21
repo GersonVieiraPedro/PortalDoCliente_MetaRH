@@ -44,6 +44,8 @@ class ListaUsuarios(BaseModel):
 class AtualizarUsuarios(BaseModel):
     Nome: Optional[str] = None
     Email: Optional[EmailStr] = None 
+    SenhaAntiga: Optional[str] = None 
+    SenhaNova: Optional[str] = None 
     CNPJ: Optional[str] = None 
     TipoAcesso: Optional[str] = None 
     PipedriveID: Optional[str] = None 

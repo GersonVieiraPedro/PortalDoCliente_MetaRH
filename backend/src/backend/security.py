@@ -56,6 +56,40 @@ def UsuarioAtual(
     try:
         payload = jwt.decode(token, Sett.SECRET_KEY, algorithms=[Sett.ALGORITHM])
         email = payload.get("email")
+   
+        if not email:
+            raise credencial_invalidas
+
+        
+    except ExpiredSignatureError:
+        raise credencial_invalidas
+
+    except PyJWKError:
+        raise credencial_invalidas
+    
+    user = session.scalar(
+        select(TB_Usuarios).where(TB_Usuarios.Email == email)
+    )
+
+    if not user:
+        raise credencial_invalidas
+    
+    return user
+
+def UsuarioAtualAdmin(
+    session: Session = Depends(AtivarSession),
+    token: str = Depends(oauth2_scheme)
+    ):
+
+    credencial_invalidas = HTTPException(
+        status_code=401,
+        detail="Credenciais inválidas",
+        headers={"WWW-Authenticate": "Bearer"}
+    )
+
+    try:
+        payload = jwt.decode(token, Sett.SECRET_KEY, algorithms=[Sett.ALGORITHM])
+        email = payload.get("email")
         sub = payload.get("sub")
         if not email:
             raise credencial_invalidas

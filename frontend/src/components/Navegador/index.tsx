@@ -87,9 +87,7 @@ export function Navegador() {
               <img
                 className="object-contain h-10 w-10 rounded-full"
                 src={
-                  usuario?.existe && usuario?.ID
-                    ? `https://storagecorpprod001.blob.core.windows.net/portal-web/fotos/usuarios/${usuario?.ID}.png`
-                    : "/UsuarioAvatar.jpg"
+                  usuario?.existe ? usuario?.urlImagem : "/UsuarioAvatar.jpg"
                 }
                 alt=""
               />

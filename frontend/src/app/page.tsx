@@ -3,8 +3,8 @@ import { useRouter } from "next/navigation";
 import { MenuLateral } from "../components/MenuLateral";
 import { Navegador } from "../components/Navegador";
 import { use, useEffect, useState } from "react";
-import { getToken } from "../lib/token";
 import { VerificarNome } from "../lib/decode";
+import { getAuthToken } from "../lib/cockies";
 
 export default function Home() {
   const router = useRouter();
@@ -13,11 +13,10 @@ export default function Home() {
   const [NomeUsuario, setNomeUsuario] = useState<string>("");
 
   useEffect(() => {
-    const token = getToken();
+    const token = getAuthToken();
 
-    setToken(token);
+    setToken(token || "");
 
-    //console.log("token :", token);
     if (!token) {
       router.push("/Login");
     }

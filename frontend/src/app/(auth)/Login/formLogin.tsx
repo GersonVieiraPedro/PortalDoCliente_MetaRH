@@ -6,6 +6,7 @@ import { useActionState, useCallback, useEffect, useState } from "react";
 import login from "./login";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { setAuthToken } from "@/src/lib/cockies";
 
 export default function FormLogin() {
   const [state, formAction, isPending] = useActionState(login, null);
@@ -14,7 +15,7 @@ export default function FormLogin() {
 
   useEffect(() => {
     if (state?.status === "Sucesso" && state.token) {
-      Cookies.set("token", state.token, { expires: 1 }); // expira em 1 dia
+      setAuthToken(state.token);
       router.push("/");
     }
   }, [state, router]);

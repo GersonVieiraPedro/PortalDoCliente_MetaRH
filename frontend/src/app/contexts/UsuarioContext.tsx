@@ -4,8 +4,8 @@ import {
   ConsultarUsuario,
   ExisteImagem,
 } from "@/src/components/Navegador/imagemUsuario";
+import { getAuthToken } from "@/src/lib/cockies";
 import { VerificarEmail, VerificarNome } from "@/src/lib/decode";
-import { getToken } from "@/src/lib/token";
 import { createContext, useContext, useState, useEffect } from "react";
 
 export const UsuarioContext = createContext<any>(null);
@@ -20,9 +20,10 @@ export function UseProvider({ children }: PropsWithChildren<{}>) {
   const [existeImagem, setExisteImagem] = useState<any>(null);
 
   useEffect(() => {
-    const token = getToken();
-
-    setToken(token);
+    const token = getAuthToken();
+    if (token !== "") {
+      setToken(token);
+    }
   }, []);
 
   useEffect(() => {

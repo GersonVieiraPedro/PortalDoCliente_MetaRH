@@ -1,11 +1,9 @@
 from http import HTTPStatus
-from typing import List
 from backend.database import AtivarSession
-from backend.models import TB_Usuarios, TB_Admissao
-from backend.schema import AdmissaoSchema, Resposta
+from backend.models import TB_Demissao, TB_Usuarios, TB_Admissao
+from backend.schema import AdmissaoSchema, DemissaoSchema, Resposta
 from fastapi import APIRouter
-from fastapi import HTTPException, Depends, Body
-from sqlalchemy import String
+from fastapi import Depends
 from sqlalchemy.future import select
 
 
@@ -61,3 +59,43 @@ def Cadastrar_Admissao(
         Session.commit()
 
         return Resposta(status='Sucesso', mensagem='Recebemos sua solicitação de admissão')
+    
+
+@router.post("/Demissao/Cadastro", status_code=HTTPStatus.CREATED, response_model=Resposta) 
+def Cadastrar_Demissao(
+    Email: str,
+    Demissao: DemissaoSchema,
+    Session = Depends(AtivarSession)  
+):
+    # Verifica se o usuário já existe
+    UsuarioDB = Session.scalar(
+        select(TB_Usuarios).where(TB_Usuarios.Email == Email)
+    )
+
+    if(UsuarioDB == None):
+        return Resposta(status='Erro', mensagem='Usúario não cadastrado')
+    else:
+        Cadastro = TB_Demissao(
+            CodigoFuncionario=Demissao.CodigoFuncionario,
+            NomeFuncionario=Demissao.NomeFuncionario,
+            Empresa=Demissao.Empresa,
+            Gestor=Demissao.Gestor,
+            Salario=Demissao.Salario,
+            Cargo=Demissao.Cargo,
+            CentroCusto=Demissao.CentroCusto,
+            DataAdmissao=Demissao.DataAdmissao,
+            DataDemissao=Demissao.DataDemissao,
+            MotivoDemissao=Demissao.MotivoDemissao,
+            FeriasVencidas=Demissao.FeriasVencidas,
+            AvisoPrevio=Demissao.AvisoPrevio,
+            ConhecimentoDesligamento=Demissao.ConhecimentoDesligamento,
+            ComunicadoPresencial=Demissao.ComunicadoPresencial,
+            Endereco=Demissao.Endereco,
+            Horario=Demissao.Horario,
+        )
+        Cadastro.ID_Usuario = UsuarioDB.ID
+
+        Session.add(Cadastro)
+        Session.commit()
+
+        return Resposta(status='Sucesso', mensagem='Recebemos sua solicitação de demissão')

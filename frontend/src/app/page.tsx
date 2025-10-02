@@ -1,56 +1,56 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { MenuLateral } from "../components/MenuLateral";
-import { Navegador } from "../components/Navegador";
-import { use, useEffect, useState } from "react";
-import { VerificarNome } from "../lib/decode";
-import { getAuthToken } from "../lib/cockies";
+'use client'
+import { useRouter } from 'next/navigation'
+import { MenuLateral } from '../components/MenuLateral'
+import { Navegador } from '../components/Navegador'
+import { use, useEffect, useState } from 'react'
+import { VerificarNome } from '../lib/decode'
+import { getAuthToken } from '../lib/cockies'
 
 export default function Home() {
-  const router = useRouter();
+  const router = useRouter()
 
-  const [token, setToken] = useState<string>("");
-  const [NomeUsuario, setNomeUsuario] = useState<string>("");
+  const [token, setToken] = useState<string>('')
+  const [NomeUsuario, setNomeUsuario] = useState<string>('')
 
   useEffect(() => {
-    const token = getAuthToken();
-
-    setToken(token || "");
-
-    if (!token) {
-      router.push("/Login");
+    const fetchToken = async () => {
+      const token = await getAuthToken()
+      setToken(token || '')
+      if (!token) {
+        router.push('/Login')
+      }
     }
-  }, []);
+    fetchToken()
+  }, [])
 
   useEffect(() => {
     if (token) {
-      const Nome = VerificarNome(token);
-      setNomeUsuario(Nome || "");
+      const Nome = VerificarNome(token)
+      setNomeUsuario(Nome || '')
+      //window.location.reload();
     }
-  }, [token]);
+  }, [token])
 
   return (
     <div>
       <MenuLateral />
       <Navegador />
-      <div className="h-screen w-full grid grid-cols-5 gap-5 text-gray-600 pt-20 pl-20 pr-5 pb-5">
-        <div className="grid col-span-3 bg-white border border-gray-300 rounded-lg  overflow-y-auto content-start z-0">
-          <div className="sticky top-0 h-15 w-full text-2xl font-medium border-b border-b-gray-200 p-2 bg-white items-center flex pl-5">
+      <div className="grid h-screen w-full grid-cols-5 gap-5 pt-20 pr-5 pb-5 pl-20 text-gray-600">
+        <div className="z-0 col-span-3 grid content-start overflow-y-auto rounded-lg border border-gray-300 bg-white">
+          <div className="sticky top-0 flex h-15 w-full items-center border-b border-b-gray-200 bg-white p-2 pl-5 text-2xl font-medium">
             <h2>Solicitações</h2>
           </div>
-          <ul className="gap-2 grid pl-6 pr-1 List-border mt-2 w-full">
+          <ul className="List-border mt-2 grid w-full gap-2 pr-1 pl-6">
             <li className="flex justify-between">
               <div className="">
-                <h2 className="font-medium text-lg pb-2">
-                  Solicitação de Admissão
-                </h2>
-                <h5 className="text-xs pb-1">11/09 12:55</h5>
+                <h2 className="pb-2 text-lg font-medium">Solicitação de Admissão</h2>
+                <h5 className="pb-1 text-xs">11/09 12:55</h5>
               </div>
               <div className="flex items-center gap-5">
-                <div className=" px-2 py-1 bg-green-500 rounded-full">
-                  <i className="bi bi-check text-white text-2xl"></i>
+                <div className="rounded-full bg-green-500 px-2 py-1">
+                  <i className="bi bi-check text-2xl text-white"></i>
                 </div>
-                <button className="h-full px-4 p-2 hover:bg-gray-200 rounded-md cursor-pointer">
+                <button className="h-full cursor-pointer rounded-md p-2 px-4 hover:bg-gray-200">
                   <i className="bi bi-trash-fill text-red-600"></i>
                 </button>
               </div>
@@ -73,19 +73,19 @@ export default function Home() {
             <li>Notificação 3</li>
           </ul>
         </div>
-        <div className="grid col-span-2  grid-rows-3 gap-4 max-h-screen">
-          <div className="h-50 w-full bg-white border border-gray-300 rounded-lg relative overflow-hidden">
+        <div className="col-span-2 grid max-h-screen grid-rows-3 gap-4">
+          <div className="relative h-50 w-full overflow-hidden rounded-lg border border-gray-300 bg-white">
             <img
-              className="object-cover rounded-lg absolute z-0 "
+              className="absolute z-0 rounded-lg object-cover"
               src="/RH-Estrategico-Gestao-negocio-Horizontal.jpg"
               alt=""
             />
-            <button className="bi bi-images text-white font-bold absolute right-0 bg-cinza-transparente  py-2 px-5 cursor-pointer"></button>
+            <button className="bi bi-images bg-cinza-transparente absolute right-0 cursor-pointer px-5 py-2 font-bold text-white"></button>
           </div>
-          <div className="h-full w-full bg-white border border-gray-300 rounded-lg"></div>
-          <div className="h-full w-full bg-white border border-gray-300 rounded-lg"></div>
+          <div className="h-full w-full rounded-lg border border-gray-300 bg-white"></div>
+          <div className="h-full w-full rounded-lg border border-gray-300 bg-white"></div>
         </div>
       </div>
     </div>
-  );
+  )
 }

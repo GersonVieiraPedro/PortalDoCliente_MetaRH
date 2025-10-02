@@ -1,67 +1,70 @@
-"use client";
+'use client'
 
-import Form from "next/form";
-import Link from "next/link";
-import { useActionState, useCallback, useEffect, useState } from "react";
-import login from "./login";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import { setAuthToken } from "@/src/lib/cockies";
+import Form from 'next/form'
+import Link from 'next/link'
+import { useActionState, useCallback, useEffect, useState } from 'react'
+import login from './login'
+import { useRouter } from 'next/navigation'
+import Cookies from 'js-cookie'
+import { setAuthToken } from '@/src/lib/cockies'
+import { useUsuario } from '../../contexts/UsuarioContext'
 
 export default function FormLogin() {
-  const [state, formAction, isPending] = useActionState(login, null);
-  const router = useRouter();
-  const [visivel, setVisivel] = useState(false);
+  const [state, formAction, isPending] = useActionState(login, null)
+  const router = useRouter()
+  const [visivel, setVisivel] = useState(false)
+  const { usuario, setUsuario, carregarUsuario } = useUsuario()
 
   useEffect(() => {
-    if (state?.status === "Sucesso" && state.token) {
-      setAuthToken(state.token);
-      router.push("/");
+    if (state?.status === 'Sucesso' && state.token) {
+      setAuthToken(state.token) // Salva o token no cookie
+      carregarUsuario() // Força o contexto a recarregar o usuário
+      router.push('/') // Redireciona após atualizar os dados
     }
-  }, [state, router]);
+  }, [state, router])
 
   return (
     <Form action={formAction}>
-      <div className="grid w-sm h-full gap-5 -top-10 ">
+      <div className="-top-10 grid h-full w-sm gap-5">
         <div>
-          <h4 className="text-sm pl-1">E-mail</h4>
+          <h4 className="pl-1 text-sm">E-mail</h4>
           <input
             autoFocus
             name="email"
-            className="w-full h-8 border border-gray-400 rounded-md p-3"
+            className="h-8 w-full rounded-md border border-gray-400 p-3"
             type="text"
             placeholder="Digite seu e-mail"
           />
         </div>
         <div className="relative">
-          <h4 className="text-sm pl-1">Senha</h4>
+          <h4 className="pl-1 text-sm">Senha</h4>
           <input
             name="senha"
-            className="w-full h-8 border border-gray-400 rounded-md p-3"
-            type={!visivel ? "password" : "text"}
+            className="h-8 w-full rounded-md border border-gray-400 p-3"
+            type={!visivel ? 'password' : 'text'}
             placeholder="Digite sua senha"
           />
           <div
             onClick={() => {
-              setVisivel(!visivel);
+              setVisivel(!visivel)
             }}
-            className={`grid bi  absolute h-6 w-6 items-center right-1 top-6 hover:bg-purple-200 cursor-pointer rounded-full pl-1 ${
-              visivel ? "bi-eye" : "bi-eye-slash"
+            className={`bi absolute top-6 right-1 grid h-6 w-6 cursor-pointer items-center rounded-full pl-1 hover:bg-purple-200 ${
+              visivel ? 'bi-eye' : 'bi-eye-slash'
             }`}
           ></div>
         </div>
-        <h1 className="text-sm text-center cursor-pointer hover:text-purple-700">
+        <h1 className="cursor-pointer text-center text-sm hover:text-purple-700">
           Esqueci a Senha ?
         </h1>
-        <button className="bg-purple-500 text-2xl text-white rounded-md p-1 mt-10 cursor-pointer hover:bg-purple-600 ">
+        <button className="mt-10 cursor-pointer rounded-md bg-purple-500 p-1 text-2xl text-white hover:bg-purple-600">
           Entrar
         </button>
-        <Link href={"/Registrar"}>
-          <h1 className="text-sm text-center cursor-pointer hover:text-purple-700">
+        <Link href={'/Registrar'}>
+          <h1 className="cursor-pointer text-center text-sm hover:text-purple-700">
             Não possuo cadastro !
           </h1>
         </Link>
       </div>
     </Form>
-  );
+  )
 }

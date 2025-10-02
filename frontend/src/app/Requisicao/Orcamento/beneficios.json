@@ -1,0 +1,125 @@
+[
+  {
+    "id": "vale_transporte",
+    "nome": "Vale Transporte",
+    "editavel": true,
+    "frequencia": "Diário",
+    "quantidade": 2,
+    "dias": 22,
+    "valor_unitario": 5.25,
+    "desconto": {
+      "tipo": "percentual",
+      "valor": 6,
+      "editavel": false
+    },
+    "categoria": "transporte"
+  },
+  {
+    "id": "vale_refeicao",
+    "nome": "Vale Refeição",
+    "editavel": true,
+    "frequencia": "Diário",
+    "quantidade": 1,
+    "dias": 22,
+    "valor_unitario": 27.5,
+    "desconto": {
+      "tipo": "percentual",
+      "valor": 0,
+      "editavel": true
+    },
+    "categoria": "alimentacao"
+  },
+  {
+    "id": "vale_alimentacao",
+    "nome": "Vale Alimentação",
+    "editavel": true,
+    "frequencia": "Mensal",
+    "quantidade": 1,
+    "valor_unitario": 147.75,
+    "desconto": {
+      "tipo": "percentual",
+      "valor": 0,
+      "editavel": false
+    },
+    "categoria": "alimentacao"
+  },
+  {
+    "id": "plano_odonto",
+    "nome": "Plano Odontológico",
+    "editavel": false,
+    "frequencia": "Mensal",
+    "quantidade": 1,
+    "valor_unitario": 44.25,
+    "desconto": {
+      "tipo": "percentual",
+      "valor": 0,
+      "editavel": false
+    },
+    "categoria": "saude"
+  },
+  {
+    "id": "plano_medico",
+    "nome": "Plano Médico",
+    "editavel": false,
+    "frequencia": "Mensal",
+    "quantidade": 1,
+    "valor_unitario": 531.35,
+    "desconto": {
+      "tipo": "percentual",
+      "valor": 0
+    },
+    "categoria": "saude"
+  },
+  {
+    "id": "seguro_vida",
+    "nome": "Seguro de Vida",
+    "editavel": true,
+    "frequencia": "Mensal",
+    "quantidade": 1,
+    "valor_unitario": 364,
+    "desconto": {
+      "tipo": "percentual",
+      "valor": 0
+    },
+    "categoria": "seguro"
+  },
+  {
+    "id": "auxilio_farmacia",
+    "nome": "Auxílio Farmácia",
+    "editavel": false,
+    "frequencia": "Mensal",
+    "quantidade": 1,
+    "valor_unitario": 41.22,
+    "desconto": {
+      "tipo": "percentual",
+      "valor": 0
+    },
+    "categoria": "saude"
+  },
+  {
+    "id": "gympass",
+    "nome": "GymPass",
+    "editavel": true,
+    "frequencia": "Mensal",
+    "quantidade": 1,
+    "valor_unitario": 77,
+    "desconto": {
+      "tipo": "percentual",
+      "valor": 0
+    },
+    "categoria": "bem_estar"
+  },
+  {
+    "id": "controle_ponto_gps",
+    "nome": "Controle de Ponto GPS",
+    "editavel": true,
+    "frequencia": "Mensal",
+    "quantidade": 1,
+    "valor_unitario": 19.99,
+    "desconto": {
+      "tipo": "percentual",
+      "valor": 0
+    },
+    "categoria": "outros"
+  }
+]

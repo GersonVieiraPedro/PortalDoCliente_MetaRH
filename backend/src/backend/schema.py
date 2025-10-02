@@ -92,3 +92,21 @@ class AdmissaoSchema(BaseModel):
     Proprietario: Optional[str] = None
     DataInicio: Optional[datetime] = None
     DataEncerramento: Optional[datetime] = None
+
+class DemissaoSchema(BaseModel):
+    CodigoFuncionario: int
+    NomeFuncionario: str
+    Cargo: str
+    CentroCusto: str
+    Empresa: str
+    Gestor: str
+    Salario: str
+    DataAdmissao: datetime
+    DataDemissao: datetime
+    MotivoDemissao: str
+    FeriasVencidas: str
+    AvisoPrevio: str
+    ConhecimentoDesligamento: str
+    ComunicadoPresencial: str
+    Endereco: str
+    Horario: str

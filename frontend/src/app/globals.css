@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --background: #ffffff;
@@ -22,14 +22,16 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   cursor: default;
 }
 
 .MenuOpen {
   overflow: hidden;
   left: 0;
-  transition: left 0.8s ease-in-out, opacity 1s ease-in-out;
+  transition:
+    left 0.8s ease-in-out,
+    opacity 1s ease-in-out;
   opacity: 1;
 }
 
@@ -38,7 +40,9 @@ body {
   left: -35vh;
   opacity: 0;
   overflow: hidden;
-  transition: left 0.8s ease-in-out, opacity 1s ease-in-out;
+  transition:
+    left 0.8s ease-in-out,
+    opacity 1s ease-in-out;
   transition-delay: 0s, 0.3s; /* primeiro some o conteúdo, depois começa o slide */
 }
 
@@ -87,9 +91,5 @@ th {
   box-shadow: 7px -1px 10px 1px rgba(0, 0, 0, 0.59);
 }
 .bg-gradiante {
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(203, 203, 255, 1) 100%
-  );
+  background: linear-gradient(120deg, rgba(255, 255, 255, 1) 0%, rgba(203, 203, 255, 1) 100%);
 }

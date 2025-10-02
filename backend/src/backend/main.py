@@ -1,7 +1,8 @@
 from backend.TabelasGI import TabelaFuncionarios
+from backend.TabelasLocais import SalvarArquivosLocal
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routers import organizacao, usuarios, auth, requisicoes,imagens
+from backend.routers import organizacao, usuarios, auth, requisicoes, imagens, simulacoes
 
 app = FastAPI()
 
@@ -19,9 +20,16 @@ app.include_router(auth.router)
 app.include_router(organizacao.router)
 app.include_router(requisicoes.router)
 app.include_router(imagens.router)
+app.include_router(simulacoes.router)
 
 
 @app.get("/")
 def home():
     
     return{"msg": "tudo certo!"}
+
+
+
+
+
+#SalvarArquivosLocal()

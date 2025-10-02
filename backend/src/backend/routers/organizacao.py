@@ -1,18 +1,14 @@
 from http import HTTPStatus
 import json
-from typing import List
+from typing import List, Optional, Literal
 from backend.TabelasGI import TabelaFuncionarios
 from backend.TabelasLocais import  limpar_dataframe
-from fastapi import APIRouter
-from fastapi import HTTPException, Depends, Body
+from fastapi import APIRouter, HTTPException, Depends, Body
 import pandas as pd
-from sqlalchemy import String
 from sqlalchemy.orm import Session
-from sqlalchemy.future import select
-from ..models import TB_Usuarios
 from ..schema import (Organizacao)
-from ..database import AtivarSession, TB_Cliente, TB_Persons
-from ..security import Criar_Hash, Criar_Token_Acesso, UsuarioAtual, Verificar_Senha
+from ..database import AtivarSession, TB_Cliente
+from ..security import UsuarioAtual
 
 
 router = APIRouter(prefix="/organizacao", tags=["Organização"])
@@ -224,11 +220,12 @@ def Dados_Empresas_Que_Tenho_Acesso(
     
 @router.post('/Funcionarios')
 def Funcionarios(
-    CNPJ: List[str] | None = None,
-    CodigoCliente: List[int] | None = None,
+    Ativo: Literal["Sim", "Não", "Tudo"] = "Tudo",
+    CNPJ: Optional[List[str]] | None = None,
+    CodigoCliente: Optional[List[int]] | None = None,
 ):
     # Chamada correta com base nos parâmetros
-    resultado = TabelaFuncionarios(CNPJ=CNPJ, CodigoCliente=CodigoCliente)
+    resultado = TabelaFuncionarios(CNPJ=CNPJ, CodigoCliente=CodigoCliente, Ativo=Ativo)
 
     if not resultado.empty:
         return {

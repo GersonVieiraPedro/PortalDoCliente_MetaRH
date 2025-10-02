@@ -1,0 +1,48 @@
+{
+  "Terceirizado": {
+    "Grupo A - Encargos Sociais Obrigatórios": [
+      { "nome": "INSS", "percentual": 20.0 },
+      { "nome": "SESI ou SESC", "percentual": 1.5 },
+      { "nome": "SENAI ou SENAC", "percentual": 1.0 },
+      { "nome": "INCRA", "percentual": 0.2 },
+      { "nome": "Seguro Acidente Trabalho - SAT", "percentual": 3.6 },
+      { "nome": "Salário Educação", "percentual": 2.5 },
+      { "nome": "SEBRAE", "percentual": 0.6 },
+      { "nome": "FGTS", "percentual": 8.0 }
+    ],
+    "Grupo B - Encargos Trabalhistas (Provisões)": [
+      { "nome": "Férias + 1/3 Férias (Abono)", "percentual": 11.11 },
+      { "nome": "INSS sobre Férias", "percentual": 3.27 },
+      { "nome": "FGTS sobre Férias", "percentual": 1.33 },
+      { "nome": "13º salário", "percentual": 8.33 },
+      { "nome": "INSS sobre 13º Salário", "percentual": 2.45 },
+      { "nome": "FGTS sobre 13º Salário", "percentual": 1.0 },
+      { "nome": "Aviso Prévio Indenizado + FGTS + INSS", "percentual": 11.78 },
+      { "nome": "Depósito Rescisão (40% FGTS)", "percentual": 3.2 },
+      { "nome": "Auxílio Doença e Faltas Justificadas", "percentual": 3.5 },
+      { "nome": "Custo de Dispensa 30 dias Data Base", "percentual": 6.0 }
+    ]
+  },
+  "Temporário": {
+    "Grupo A - Encargos Sociais Obrigatórios": [
+      { "nome": "INSS", "percentual": 20.0 },
+      { "nome": "Seguro Acidente Trabalho - SAT", "percentual": 3.6 },
+      { "nome": "FGTS", "percentual": 8.0 },
+      { "nome": "Salário Educação", "percentual": 2.5 }
+    ],
+    "Grupo B - Encargos Trabalhistas (Provisões)": [
+      { "nome": "Férias + 1/3 Férias (Abono)", "percentual": 11.11 },
+      { "nome": "13º salário", "percentual": 8.33 },
+      { "nome": "INSS sobre 13º Salário", "percentual": 2.18 },
+      { "nome": "FGTS sobre 13º Salário", "percentual": 0.67 }
+    ]
+  },
+  "Recrutamento & Seleção": {
+    "Encargos Tributários": [
+      { "nome": "ISS", "percentual": 5.0 },
+      { "nome": "PIS", "percentual": 1.65 },
+      { "nome": "COFINS", "percentual": 7.6 },
+      { "nome": "CSLL", "percentual": 1.5 }
+    ]
+  }
+}

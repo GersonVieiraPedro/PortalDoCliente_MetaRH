@@ -1,76 +1,83 @@
-"use client";
+'use client'
 
-import {
-  ConsultarUsuario,
-  ExisteImagem,
-} from "@/src/components/Navegador/imagemUsuario";
-import { getAuthToken } from "@/src/lib/cockies";
-import { VerificarEmail, VerificarNome } from "@/src/lib/decode";
-import { createContext, useContext, useState, useEffect } from "react";
+import { ConsultarUsuario, ExisteImagem } from '@/src/components/Navegador/imagemUsuario'
+import { getAuthToken } from '@/src/lib/cockies'
+import { VerificarEmail, VerificarNome } from '@/src/lib/decode'
+import { createContext, useContext, useState, useEffect, use } from 'react'
+import { PropsWithChildren } from 'react'
+import { MinhasEmpresas } from './MeusDados'
 
-export const UsuarioContext = createContext<any>(null);
-
-import { PropsWithChildren } from "react";
+export const UsuarioContext = createContext<any>(null)
 
 export function UseProvider({ children }: PropsWithChildren<{}>) {
-  const [usuario, setUsuario] = useState<any>(null);
-  const [token, setToken] = useState<string>("");
-  const [nomeUsuario, setNomeUsuario] = useState<string>("");
-  const [emailUsuario, setEmailUsuario] = useState<string>("");
-  const [existeImagem, setExisteImagem] = useState<any>(null);
+  const [usuario, setUsuario] = useState<any>(null)
+  const [token, setToken] = useState<string>('')
+  const [dados, setDados] = useState<any>(null)
 
   useEffect(() => {
-    const token = getAuthToken();
-    if (token !== "") {
-      setToken(token);
+    const varToken = getAuthToken()
+    if (varToken) {
+      setToken(varToken)
+      carregarUsuario(varToken)
     }
-  }, []);
+  }, [])
 
-  useEffect(() => {
-    if (token) {
-      const Nome = VerificarNome(token);
-      const Email = VerificarEmail(token);
-      setNomeUsuario(Nome || "");
-      setEmailUsuario(Email || "");
+  const carregarUsuario = async (tokenParam?: string) => {
+    const T = tokenParam || getAuthToken()
+    if (!T) return
+
+    const nome = await VerificarNome(T)
+    const email = await VerificarEmail(T)
+    let user = null
+
+    if (email) {
+      user = await ConsultarUsuario(T, email)
     }
-  }, [token]);
 
-  useEffect(() => {
-    if (emailUsuario !== "" && nomeUsuario !== "") {
-      const fetchUsuario = async () => {
-        const user = await ConsultarUsuario(token, emailUsuario);
-        setUsuario(user); // agora sim, o objeto real
-      };
+    if (user) {
+      const existe = await ExisteImagem(user.ID)
+      const urlImagem = `https://storagecorpprod001.blob.core.windows.net/portal-web/fotos/usuarios/${user.ID}.png`
 
-      fetchUsuario();
+      setUsuario({
+        ...user,
+        nome,
+        email,
+        existeImagem: existe,
+        urlImagem,
+        token: T,
+      })
+
+      const pegarEmpresas = async () => {
+        const dados = await MinhasEmpresas(email)
+
+        const CNPJS = [
+          ...new Set(
+            dados?.map((d: { CNPJ: any }) => d.CNPJ).filter((cnpj: any) => cnpj != null) // remove null e undefined
+          ),
+        ]
+        const CodigoCliente = [
+          ...new Set(
+            dados
+              ?.map((d: { ['COD Contrato G.I']: any }) => d['COD Contrato G.I'])
+              .filter((codigo: any) => codigo != null) // remove null e undefined
+          ),
+        ]
+        if (CNPJS === usuario?.CNPJS || CodigoCliente === usuario?.CodigosCliente) return
+        setUsuario((prev: any) => ({
+          ...prev,
+          CNPJS,
+          CodigosCliente: CodigoCliente,
+        }))
+      }
+      pegarEmpresas()
     }
-  }, [nomeUsuario, emailUsuario]);
-
-  useEffect(() => {
-    console.log("Usuaurio : ", usuario);
-    if (usuario?.ID) {
-      const existes = async () => {
-        const e = await ExisteImagem(usuario?.ID);
-        setExisteImagem(e);
-      };
-      existes();
-    }
-  }, [usuario]);
-
-  useEffect(() => {
-    setUsuario({
-      ...usuario,
-      existe: existeImagem,
-      urlImagem: `https://storagecorpprod001.blob.core.windows.net/portal-web/fotos/usuarios/${usuario?.ID}.png`,
-      token: token,
-    });
-  }, [existeImagem]);
+  }
 
   return (
-    <UsuarioContext.Provider value={{ usuario, setUsuario }}>
+    <UsuarioContext.Provider value={{ usuario, setUsuario, carregarUsuario }}>
       {children}
     </UsuarioContext.Provider>
-  );
+  )
 }
 
-export const useUsuario = () => useContext(UsuarioContext);
+export const useUsuario = () => useContext(UsuarioContext)

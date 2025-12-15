@@ -1,0 +1,527 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-4789-a1b2-c3d4e5f67890",
+		"name": "MetaRH - Financeiro (Notas Fiscais)",
+		"description": "Collection para testar a API de Notas Fiscais (Duplicatas) do Portal MetaRH.\n\n**Configuração:**\n1. Configure as variáveis de ambiente (baseURL, token)\n2. Faça login para obter o token JWT\n3. Teste os endpoints de notas fiscais\n\n**Última atualização:** 2025-10-13",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Salva o token automaticamente nas variáveis de ambiente",
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.environment.set(\"token\", jsonData.access_token);",
+									"    pm.environment.set(\"token_type\", jsonData.token_type);",
+									"    console.log(\"Token salvo com sucesso!\");",
+									"} else {",
+									"    console.log(\"Erro ao fazer login\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"seu.email@exemplo.com\",\n  \"senha\": \"sua_senha\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/usuarios/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"usuarios",
+								"login"
+							]
+						},
+						"description": "Endpoint de login para obter o token JWT.\n\n**Atenção:** Substitua o email e senha pelos dados reais antes de executar."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints de autenticação para obter o token JWT necessário para acessar a API."
+		},
+		{
+			"name": "Financeiro - Notas Fiscais",
+			"item": [
+				{
+					"name": "Listar Notas Fiscais (Todas)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/financeiro/notas-fiscais",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"financeiro",
+								"notas-fiscais"
+							]
+						},
+						"description": "Lista todas as notas fiscais ativas (Status = 'A').\n\n**Retorna:**\n- Lista de notas fiscais\n- Total de registros\n- Resumo (totais e valores de notas a vencer/vencidas)"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Notas Fiscais (Por Cliente)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/financeiro/notas-fiscais?codigo_cliente=123",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"financeiro",
+								"notas-fiscais"
+							],
+							"query": [
+								{
+									"key": "codigo_cliente",
+									"value": "123",
+									"description": "Código do cliente (substituir pelo código real)"
+								}
+							]
+						},
+						"description": "Lista notas fiscais filtradas por código do cliente.\n\n**Parâmetros:**\n- codigo_cliente: Código do cliente para filtrar"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Notas Fiscais (Por Competência)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/financeiro/notas-fiscais?competencia=202501&codigo_cliente=123",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"financeiro",
+								"notas-fiscais"
+							],
+							"query": [
+								{
+									"key": "competencia",
+									"value": "202501",
+									"description": "Competência no formato YYYYMM (ex: 202501 = Janeiro/2025)"
+								},
+								{
+									"key": "codigo_cliente",
+									"value": "123",
+									"description": "Código do cliente"
+								}
+							]
+						},
+						"description": "Lista notas fiscais filtradas por competência.\n\n**Formato da competência:** YYYYMM\n- 202501 = Janeiro/2025\n- 202412 = Dezembro/2024"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Notas Fiscais (A Vencer)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/financeiro/notas-fiscais?status_nota=a_vencer&codigo_cliente=123",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"financeiro",
+								"notas-fiscais"
+							],
+							"query": [
+								{
+									"key": "status_nota",
+									"value": "a_vencer",
+									"description": "Status: a_vencer, vencida ou paga"
+								},
+								{
+									"key": "codigo_cliente",
+									"value": "123"
+								}
+							]
+						},
+						"description": "Lista apenas as notas fiscais a vencer.\n\n**Valores válidos para status_nota:**\n- a_vencer\n- vencida\n- paga"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Notas Fiscais (Vencidas)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/financeiro/notas-fiscais?status_nota=vencida&codigo_cliente=123",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"financeiro",
+								"notas-fiscais"
+							],
+							"query": [
+								{
+									"key": "status_nota",
+									"value": "vencida"
+								},
+								{
+									"key": "codigo_cliente",
+									"value": "123"
+								}
+							]
+						},
+						"description": "Lista apenas as notas fiscais vencidas."
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Notas Fiscais (Por Período)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/financeiro/notas-fiscais?data_inicio=2025-01-01&data_fim=2025-01-31&codigo_cliente=123",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"financeiro",
+								"notas-fiscais"
+							],
+							"query": [
+								{
+									"key": "data_inicio",
+									"value": "2025-01-01",
+									"description": "Data início no formato YYYY-MM-DD"
+								},
+								{
+									"key": "data_fim",
+									"value": "2025-01-31",
+									"description": "Data fim no formato YYYY-MM-DD"
+								},
+								{
+									"key": "codigo_cliente",
+									"value": "123"
+								}
+							]
+						},
+						"description": "Lista notas fiscais em um período específico de vencimento.\n\n**Formato das datas:** YYYY-MM-DD"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Notas Fiscais (Com Paginação)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/financeiro/notas-fiscais?limit=10&offset=0&codigo_cliente=123",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"financeiro",
+								"notas-fiscais"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Quantidade de registros (1-500)"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Posição inicial (0 = primeira página)"
+								},
+								{
+									"key": "codigo_cliente",
+									"value": "123"
+								}
+							]
+						},
+						"description": "Lista notas fiscais com paginação.\n\n**Paginação:**\n- limit: Máximo de registros (1-500)\n- offset: Posição inicial\n  - Página 1: offset=0\n  - Página 2: offset=10\n  - Página 3: offset=20"
+					},
+					"response": []
+				},
+				{
+					"name": "Obter Resumo de Notas Fiscais",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/financeiro/notas-fiscais/resumo?codigo_cliente=123",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"financeiro",
+								"notas-fiscais",
+								"resumo"
+							],
+							"query": [
+								{
+									"key": "codigo_cliente",
+									"value": "123"
+								}
+							]
+						},
+						"description": "Retorna apenas o resumo das notas fiscais para os cards da dashboard.\n\n**Retorna:**\n- Total e valor de notas a vencer\n- Total e valor de notas vencidas"
+					},
+					"response": []
+				},
+				{
+					"name": "Obter Resumo (Por Competência)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/financeiro/notas-fiscais/resumo?codigo_cliente=123&competencia=202501",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"financeiro",
+								"notas-fiscais",
+								"resumo"
+							],
+							"query": [
+								{
+									"key": "codigo_cliente",
+									"value": "123"
+								},
+								{
+									"key": "competencia",
+									"value": "202501",
+									"description": "Competência no formato YYYYMM"
+								}
+							]
+						},
+						"description": "Retorna o resumo filtrado por competência específica."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para consulta de Notas Fiscais (Duplicatas).\n\n**Requisitos:**\n- Token JWT válido (obtido via login)\n- Apenas duplicatas com Status = 'A' são retornadas"
+		},
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Verificar API",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Endpoint básico para verificar se a API está rodando."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para verificar o status da API"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "token_type",
+			"value": "Bearer",
+			"type": "string"
+		}
+	]
+}

@@ -59,3 +59,4 @@ def limpar_dataframe(df: pd.DataFrame) -> pd.DataFrame:
             df[col] = df[col].astype(str)
     
     return df
+

@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #f0f0f0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .card {
+        background: #fff;
+        width: 420px;
+        padding: 40px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .check {
+        font-size: 60px;
+        color: #4caf50;
+        opacity: 0;
+        animation: pop 0.6s ease forwards;
+      }
+
+      @keyframes pop {
+        0% {
+          transform: scale(0.3);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card">
+      <div class="check">✔</div>
+      <h2 style="color: #4caf50; margin-top: 20px">Ação concluída!</h2>
+      <p style="color: #555; font-size: 15px">
+        Sua solicitação foi finalizada e registrada com sucesso.
+      </p>
+    </div>
+  </body>
+</html>

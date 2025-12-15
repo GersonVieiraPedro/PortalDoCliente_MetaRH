@@ -1,14 +1,18 @@
 from http import HTTPStatus
 import json
-from typing import List, Optional, Literal
-from backend.TabelasGI import TabelaFuncionarios
-from backend.TabelasLocais import  limpar_dataframe
-from fastapi import APIRouter, HTTPException, Depends, Body
+from sqlalchemy.future import select
+from typing import List, Optional, Literal, Union
+import numpy as np
+from ..TabelasGI import TabelaHorario, TabelaBeneficios, TabelaFuncionarios, TB_Cliente
+from ..TabelasLocais import  limpar_dataframe
+from fastapi import APIRouter, HTTPException, Depends, Body  # type: ignore
 import pandas as pd
 from sqlalchemy.orm import Session
-from ..schema import (Organizacao)
-from ..database import AtivarSession, TB_Cliente
+from ..schema import Organizacao, EmpresaResponse
+from ..database import AtivarSession
 from ..security import UsuarioAtual
+
+from ..models import TB_Empresa, TB_UsuarioEmpresa, DIM_Proprietario
 
 
 router = APIRouter(prefix="/organizacao", tags=["Organização"])
@@ -39,6 +43,163 @@ def Tabela_Clientes_GI(
 
 
 
+
+@router.post('/Funcionarios')
+def Funcionarios(
+    Ativo: Literal["Sim", "Não", "Tudo"] = "Tudo",
+    CNPJ: Optional[List[str]] | None = None,
+    CodigoCliente: Optional[List[int]] | None = None,
+):
+    # Chamada correta com base nos parâmetros
+    resultado = TabelaFuncionarios(CNPJ=CNPJ, CodigoCliente=CodigoCliente, Ativo=Ativo)
+
+    if not resultado.empty:
+        return {
+            "status": "Sucesso",
+            "mensagem": "Registros encontrados!",
+            "tabela": resultado.to_dict(orient="records")
+        }
+    else:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail={"status": "Erro", "mensagem": "Nenhum registro encontrado"}
+        )
+
+
+ 
+@router.post('/Beneficios')
+def Beneficios(
+    CodigoFuncionario: Optional[List[Union[str, int]]] = None
+):
+    """
+    Retorna os benefícios dos funcionários com base nos códigos fornecidos.
+    
+    Args:
+        CodigoFuncionario: Lista opcional de códigos de funcionários (pode ser string ou int)
+        
+    Returns:
+        dict: Dicionário contendo status, mensagem, total de registros e a tabela de benefícios
+    """
+    # Converte tudo pra string (caso venha número)
+    if CodigoFuncionario is not None:
+        codigos = [str(cod).strip() for cod in CodigoFuncionario if cod not in (None, "")]
+        codigos = codigos or None
+    else:
+        codigos = None
+
+    df = TabelaBeneficios(CodigoFuncionario=codigos)
+
+    if df.empty:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail={"status": "Erro", "mensagem": "Nenhum benefício encontrado"}
+        )
+
+    # Removendo erros
+    df_json_safe = df.replace({np.inf: None, -np.inf: None, np.nan: None})
+
+    return {
+        "status": "Sucesso",
+        "mensagem": "Benefícios encontrados!",
+        "total_registros": len(df_json_safe),
+        "tabela": df_json_safe.to_dict(orient="records")
+    }
+
+
+@router.get('/Horarios', status_code=HTTPStatus.OK)
+def Horarios():
+    """
+    Retorna a lista de horários ativos.
+    
+    Returns:
+        dict: Dicionário contendo status, mensagem, total de registros e a tabela de horários
+    """
+    try:
+        # Busca os horários ativos
+        df = TabelaHorario()
+
+        if df.empty:
+            raise HTTPException(
+                status_code=HTTPStatus.NOT_FOUND,
+                detail={"status": "Erro", "mensagem": "Nenhum horário encontrado"}
+            )
+
+        # Remove possíveis valores inválidos
+        #df_json_safe = df.replace({np.inf: None, -np.inf: None, np.nan: None})
+
+        return {
+            "status": "Sucesso",
+            "mensagem": "Horários encontrados!",
+            "total_registros": len(df),
+            "tabela": df.to_dict(orient="records")
+        }
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            detail={"status": "Erro", "mensagem": f"Erro ao buscar horários: {str(e)}"}
+        )
+
+
+
+@router.get('/MinhasEmpresas', response_model=list[EmpresaResponse], status_code=HTTPStatus.OK)
+def Minhas_Empresas(
+    id_usuario: int,
+    session = Depends(AtivarSession)
+):
+    """Retorna a lista de empresas associadas ao usuário atual.
+    """
+    try:
+        stmt = (
+            select(
+                TB_Empresa,
+                DIM_Proprietario.Nome.label("NomeProprietario"),
+                DIM_Proprietario.Email.label("EmailProprietario")
+            )
+            .join(DIM_Proprietario, DIM_Proprietario.ID == TB_Empresa.IDProprietario)
+            .join(TB_UsuarioEmpresa, TB_UsuarioEmpresa.IDEmpresa == TB_Empresa.ID)
+            .where(
+                TB_UsuarioEmpresa.IDUsuario == id_usuario,
+                TB_UsuarioEmpresa.Ativo == True
+            )
+        )
+
+        result = session.execute(stmt).all()
+
+        return [
+            EmpresaResponse(
+                ID=empresa.ID,
+                IDSelecty=empresa.IDSelecty,
+                IDPipedrive=empresa.IDPipedrive,
+                IDProprietario=empresa.IDProprietario,
+                CodigoCliente=empresa.CodigoCliente,
+                CodigoEmpresaFat=empresa.CodigoEmpresaFat,
+                CodigoFilialFat=empresa.CodigoFilialFat,
+                Nome=empresa.Nome,
+                RazaoSocial=empresa.RazaoSocial,
+                GrupoEconomico=empresa.GrupoEconomico,
+                CNPJ=empresa.CNPJ,
+                Ativo=empresa.Ativo,
+                DataCadastro=empresa.DataCadastro,
+                DataAtualizacao=empresa.DataAtualizacao,
+                NomeProprietario=nome,
+                EmailProprietario=email
+            )
+            for empresa, nome, email in result
+        ]
+
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            detail={"status": "Erro", "mensagem": f"Erro ao buscar empresas: {str(e)}"}
+        )
+
+
+
+
+"""
+ROTAS DESCONTINUADAS PARA ORGANIZAÇÃO - USADAS ANTERIORMENTE PARA INTEGRAÇÃO COM PIPEDRIVE
 @router.post("/pessoas/")
 def Tabela_Person_Pipedrive(
     IDOrganizacao: str = None,
@@ -122,6 +283,7 @@ def Dados_Empresas_Que_Tenho_Acesso(
             "id", 
             "Proprietário", 
             "Nome", 
+            "owner_email",
             "org_name", 
             "primary_email", 
             "Id da Organização"
@@ -218,26 +380,6 @@ def Dados_Empresas_Que_Tenho_Acesso(
             detail={"status": "Erro", "mensagem": str(e)}
         )
     
-@router.post('/Funcionarios')
-def Funcionarios(
-    Ativo: Literal["Sim", "Não", "Tudo"] = "Tudo",
-    CNPJ: Optional[List[str]] | None = None,
-    CodigoCliente: Optional[List[int]] | None = None,
-):
-    # Chamada correta com base nos parâmetros
-    resultado = TabelaFuncionarios(CNPJ=CNPJ, CodigoCliente=CodigoCliente, Ativo=Ativo)
-
-    if not resultado.empty:
-        return {
-            "status": "Sucesso",
-            "mensagem": "Registros encontrados!",
-            "tabela": resultado.to_dict(orient="records")
-        }
-    else:
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
-            detail={"status": "Erro", "mensagem": "Nenhum registro encontrado"}
-        )
 
 
- 
+"""

@@ -1,113 +1,177 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from .database import AtivarSession
 from zoneinfo import ZoneInfo
 import jwt
-from jwt.exceptions import PyJWKError, ExpiredSignatureError
+from jwt.exceptions import ExpiredSignatureError
+
 from pwdlib import PasswordHash
+
+from .database import AtivarSession
 from .models import TB_Usuarios
 from .settings import Settings
 
 
+# -------------------------------------------------
+# CONFIGURAÇÕES GERAIS
+# -------------------------------------------------
 
-
-
+# Contexto de hash de senha (recomendado)
 pwd_context = PasswordHash.recommended()
+
+# OAuth2 padrão (usado pelo FastAPI para extrair o token do header)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
+# Carrega configurações (SECRET_KEY, ALGORITHM, EXPIRES_IN_MINUTES)
 Sett = Settings()
 
 
-def Criar_Hash(Senha: str):
-     return pwd_context.hash(Senha)
+# -------------------------------------------------
+# FUNÇÕES DE SENHA
+# -------------------------------------------------
 
-def Verificar_Senha(Senha: str, Hash: str):
-     return pwd_context.verify(Senha, Hash)
+def Criar_Hash(senha: str) -> str:
+    """
+    Gera hash seguro da senha.
+    """
+    return pwd_context.hash(senha)
 
-def Criar_Token_Acesso(data: dict):
+
+def Verificar_Senha(senha: str, hash_salvo: str) -> bool:
+    """
+    Verifica se a senha informada corresponde ao hash salvo.
+    """
+    return pwd_context.verify(senha, hash_salvo)
+
+
+# -------------------------------------------------
+# CRIAÇÃO DO TOKEN JWT
+# -------------------------------------------------
+
+def Criar_Token_Acesso(data: dict) -> str:
+    """
+    Cria token JWT de acesso.
+    O campo 'sub' deve conter SEMPRE o ID do usuário.
+    """
     to_encode = data.copy()
-    timezone_brasilia = ZoneInfo("America/Sao_Paulo")
-    # Define a expiração do token
-    expire = datetime.now(tz=timezone_brasilia) + timedelta(minutes=Sett.EXPIRES_IN_MINUTES)
-    #datetime.now(tz=ZoneInfo("Etc/UTC"))p
 
+    # Define timezone do Brasil
+    timezone_brasilia = ZoneInfo("America/Sao_Paulo")
+
+    # Calcula expiração
+    expire = datetime.now(tz=timezone_brasilia) + timedelta(
+        minutes=Sett.EXPIRES_IN_MINUTES
+    )
+
+    # Adiciona expiração ao payload
     to_encode.update({"exp": expire})
 
-    # Adiciona o tempo de expiração ao payload do token
-    encoded_jwt = jwt.encode(to_encode, Sett.SECRET_KEY, algorithm=Sett.ALGORITHM)
- 
+    # Gera o token
+    encoded_jwt = jwt.encode(
+        to_encode,
+        Sett.SECRET_KEY,
+        algorithm=Sett.ALGORITHM
+    )
 
     return encoded_jwt
 
-def UsuarioAtual(
-    session: Session = Depends(AtivarSession),
-    token: str = Depends(oauth2_scheme)
-    ):
 
-    credencial_invalidas = HTTPException(
+# -------------------------------------------------
+# DEPENDÊNCIA: USUÁRIO ATUAL (QUALQUER USUÁRIO LOGADO)
+# -------------------------------------------------
+
+def UsuarioAtual(
+    token: str = Depends(oauth2_scheme),
+    session: Session = Depends(AtivarSession),
+):
+    """
+    Resolve o usuário autenticado a partir do token JWT.
+    Usa EXCLUSIVAMENTE o campo 'sub' como identidade.
+    """
+
+    credenciais_invalidas = HTTPException(
         status_code=401,
         detail="Credenciais inválidas",
-        headers={"WWW-Authenticate": "Bearer"}
+        headers={"WWW-Authenticate": "Bearer"},
     )
 
     try:
-        payload = jwt.decode(token, Sett.SECRET_KEY, algorithms=[Sett.ALGORITHM])
-        email = payload.get("email")
-   
-        if not email:
-            raise credencial_invalidas
+        # Decodifica o token
+        payload = jwt.decode(
+            token,
+            Sett.SECRET_KEY,
+            algorithms=[Sett.ALGORITHM],
+        )
 
-        
+        # O 'sub' é o ID do usuário
+        user_id = payload.get("sub")
+
+        if not user_id:
+            raise credenciais_invalidas
+
+        user_id = int(user_id)
+
     except ExpiredSignatureError:
-        raise credencial_invalidas
+        # Token expirado
+        raise credenciais_invalidas
 
-    except PyJWKError:
-        raise credencial_invalidas
-    
-    user = session.scalar(
-        select(TB_Usuarios).where(TB_Usuarios.Email == email)
-    )
+    except Exception:
+        # Qualquer outro erro de token
+        raise credenciais_invalidas
 
-    if not user:
-        raise credencial_invalidas
-    
-    return user
+    # Busca o usuário pela chave primária
+    usuario = session.get(TB_Usuarios, user_id)
+
+    if not usuario:
+        raise credenciais_invalidas
+
+    return usuario
+
+
+# -------------------------------------------------
+# DEPENDÊNCIA: USUÁRIO ATUAL (APENAS ADMIN)
+# -------------------------------------------------
 
 def UsuarioAtualAdmin(
+    token: str = Depends(oauth2_scheme),
     session: Session = Depends(AtivarSession),
-    token: str = Depends(oauth2_scheme)
-    ):
+):
+    """
+    Resolve o usuário autenticado e valida se é ADMIN.
+    """
 
-    credencial_invalidas = HTTPException(
+    credenciais_invalidas = HTTPException(
         status_code=401,
         detail="Credenciais inválidas",
-        headers={"WWW-Authenticate": "Bearer"}
+        headers={"WWW-Authenticate": "Bearer"},
     )
 
     try:
-        payload = jwt.decode(token, Sett.SECRET_KEY, algorithms=[Sett.ALGORITHM])
-        email = payload.get("email")
-        sub = payload.get("sub")
-        if not email:
-            raise credencial_invalidas
-        if sub !="Admin":
-            raise credencial_invalidas
-        
+        payload = jwt.decode(
+            token,
+            Sett.SECRET_KEY,
+            algorithms=[Sett.ALGORITHM],
+        )
+
+        user_id = payload.get("sub")
+        tipo = payload.get("tipo")
+
+        if not user_id or tipo != "Admin":
+            raise credenciais_invalidas
+
+        user_id = int(user_id)
 
     except ExpiredSignatureError:
-        raise credencial_invalidas
+        raise credenciais_invalidas
 
-    except PyJWKError:
-        raise credencial_invalidas
-    
-    user = session.scalar(
-        select(TB_Usuarios).where(TB_Usuarios.Email == email)
-    )
+    except Exception:
+        raise credenciais_invalidas
 
-    if not user:
-        raise credencial_invalidas
-    
-    return user
+    usuario = session.get(TB_Usuarios, user_id)
+
+    if not usuario:
+        raise credenciais_invalidas
+
+    return usuario

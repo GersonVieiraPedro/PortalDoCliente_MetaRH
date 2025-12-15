@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPS Reprovado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #ef4444;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            background-color: #f9fafb;
+            padding: 30px;
+            border: 1px solid #e5e7eb;
+        }
+        .info-box {
+            background-color: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #ef4444;
+            border-radius: 4px;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #ef4444;
+            font-size: 18px;
+        }
+        .info-row {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        .label {
+            font-weight: bold;
+            color: #6b7280;
+        }
+        .value {
+            color: #111827;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+        .status-badge {
+            background-color: #ef4444;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .motivo-box {
+            background-color: #fef2f2;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+        }
+        .motivo-box h3 {
+            margin-top: 0;
+            color: #ef4444;
+            font-size: 18px;
+        }
+        .descricao-text {
+            margin: 5px 0;
+            padding: 10px;
+            background-color: white;
+            border-radius: 4px;
+            color: #111827;
+        }
+        .disclaimer {
+            margin-top: 20px;
+            color: #6b7280;
+            font-size: 14px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>❌ RPS Reprovado</h1>
+        </div>
+
+        <div class="content">
+            <p>Um RPS foi reprovado no Portal Cliente MetaRH.</p>
+
+            <div class="info-box">
+                <h3>📊 Informações do RPS</h3>
+                <div class="info-row">
+                    <span class="label">Número RPS (Duplicata):</span>
+                    <span class="value">{duplicata}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Número NFE:</span>
+                    <span class="value">{numero_nfe}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Empresa Faturadora:</span>
+                    <span class="value">{codigo_empresa_fat} / {codigo_filial_fat}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Valor:</span>
+                    <span class="value">{valor}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Vencimento:</span>
+                    <span class="value">{vencimento}</span>
+                </div>
+            </div>
+
+            <div class="motivo-box">
+                <h3>⚠️ Motivo da Reprovação</h3>
+                <div class="info-row">
+                    <span class="label">Motivo:</span>
+                    <span class="value">{motivo_reprovacao}</span>
+                </div>
+                <div class="info-row" style="margin-top: 15px;">
+                    <span class="label">Descrição:</span>
+                    <p class="descricao-text">{descricao_reprovacao}</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>👤 Reprovação</h3>
+                <div class="info-row">
+                    <span class="label">Status:</span>
+                    <span class="status-badge">REPROVADO</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Reprovado por:</span>
+                    <span class="value">{usuario_nome}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Email:</span>
+                    <span class="value">{usuario_email}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Data/Hora:</span>
+                    <span class="value">{data_acao}</span>
+                </div>
+            </div>
+
+            <p class="disclaimer">
+                Este é um email automático de notificação. Não é necessário responder.
+            </p>
+        </div>
+
+        <div class="footer">
+            <p><strong>Portal Cliente MetaRH</strong> - Sistema de Gestão de RPS</p>
+            <p>© {ano_atual} MetaRH. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>

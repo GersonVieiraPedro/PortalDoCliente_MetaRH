@@ -67,14 +67,13 @@ def Entrar(usuario: UsarioLogin, session = Depends(AtivarSession)):
 
 
 
-@router.get('/listar', status_code=HTTPStatus.OK, response_model=ListaUsuarios)
+@router.get('/listar', status_code=HTTPStatus.OK, response_model=ListaUsuarios) 
 def Listar_Usuarios(
     Limite: int = 100,
     Inicio: int = 0,
     TipoFiltro: str = None,
     Filtro: str = None,
     session=Depends(AtivarSession)
-   # usuario=Depends(UsuarioAtual)
 ):
     query = select(TB_Usuarios)
 
@@ -86,24 +85,18 @@ def Listar_Usuarios(
             TB_Usuarios.DataCadastro.cast(String).contains(Filtro) |
             TB_Usuarios.ID.cast(String).contains(Filtro)
         )
-    elif TipoFiltro == "Nome":
-        query = query.filter(TB_Usuarios.Nome.contains(Filtro))
-    elif TipoFiltro == "CNPJ":
-        query = query.filter(TB_Usuarios.CNPJ.contains(Filtro))
-    elif TipoFiltro == "Email":
-        query = query.filter(TB_Usuarios.Email.contains(Filtro))
-    elif TipoFiltro == "Data":
-        query = query.filter(TB_Usuarios.DataCadastro.cast(String).contains(Filtro))
-    elif TipoFiltro == "ID":
-        query = query.filter(TB_Usuarios.ID.cast(String).contains(Filtro))
 
-    # Paginação 
+    query = query.order_by(TB_Usuarios.ID.desc())
     query = query.offset(Inicio).limit(Limite)
 
-    # Executa e coleta os resultados
-    usuarios = session.scalars(query).all()
+    usuarios_orm = session.scalars(query).all()
 
-    return {'usuarios': usuarios}
+    usuarios_dto = [
+        UsuarioPublico.model_validate(u)
+        for u in usuarios_orm
+    ]
+
+    return ListaUsuarios(usuarios=usuarios_dto)
 
 
 
@@ -196,3 +189,29 @@ def Usuario_ID(
 
     return UsuarioDB
 
+
+
+# -------------------------------------------------
+# ROTA: RETORNA DADOS DO USUÁRIO ATUAL
+# -------------------------------------------------
+@router.get("/eu", response_model=UsuarioPublico, status_code=HTTPStatus.OK)
+def obter_usuario_atual(
+    usuario=Depends(UsuarioAtual),  # resolve via token
+    session: Session = Depends(AtivarSession)  # session opcional se precisar consultar algo extra
+):
+    """
+    Retorna os dados do usuário autenticado.
+
+    Usa o token JWT enviado no header Authorization: Bearer <token>.
+    """
+    try:
+        # Retorna os dados via schema
+        return UsuarioPublico.model_validate(usuario)
+
+    except Exception as e:
+        # Log interno (apenas print aqui, em produção use logging)
+        print("Erro ao obter usuário atual:", str(e))
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao obter usuário"
+        )

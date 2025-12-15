@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #f0f0f0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .card {
+        background: #fff;
+        width: 420px;
+        padding: 40px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .error {
+        font-size: 60px;
+        color: #e53935;
+        animation: shake 0.5s ease;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-10px);
+        }
+        40% {
+          transform: translateX(10px);
+          transform: scale(1.5);
+        }
+        60% {
+          transform: translateX(-16px);
+        }
+        80% {
+          transform: translateX(16px);
+          transform: scale(1);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card">
+      <div class="error">✖</div>
+      <h2 style="color: #e53935; margin-top: 20px">Erro ao processar</h2>
+      <p style="color: #555; font-size: 15px">
+        Não foi possível concluir a solicitação.<br />
+        O link pode estar expirado ou já ter sido utilizado.
+      </p>
+    </div>
+  </body>
+</html>

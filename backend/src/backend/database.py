@@ -1,15 +1,33 @@
 from io import StringIO
 import json
+import os
 import numpy as np
 import pandas as pd
 from azure.storage.filedatalake import DataLakeServiceClient
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+from sqlalchemy.pool import NullPool
 import pyodbc
 from .settings import Settings
 
-engine = create_engine(Settings().DATABASE_URL)
+_settings = Settings()
+
+# Configurar engine com pool de conexões robusto
+engine = create_engine(
+    _settings.DATABASE_URL,
+    # Pool de conexões
+    pool_size=5,                    # Número de conexões mantidas no pool
+    max_overflow=10,                # Conexões extras além do pool_size
+    pool_recycle=3600,              # Reciclar conexões a cada 1 hora (evita timeout do SQL Server)
+    pool_pre_ping=True,             # CRÍTICO: Testa conexão antes de usar (evita erro 10054)
+    # Timeouts
+    connect_args={
+        "timeout": 30,              # Timeout de conexão em segundos
+    },
+    # Logging (descomente para debug)
+    # echo=True,                    # Log de todas as queries SQL
+)
 
 def AtivarSession():
     """Cria uma nova sessão do banco de dados."""
@@ -17,35 +35,6 @@ def AtivarSession():
         yield session
 
 
-
-def TB_Cliente(CodigoCliente: str, CNPJ: list[str]):
-    
-    # Conexão com o banco de dados utilizando ODBC
-    StrCnxn = "DRIVER={ODBC Driver 17 for SQL Server};"+f"""SERVER={Settings().SERVER};DATABASE={Settings().DATABASE};UID={Settings().USER};PWD={Settings().PASSWORD}"""
-    
-    # Estabelecendo conexão com o banco de dados utilizando ODBC
-    cnxn = pyodbc.connect(StrCnxn)
-
-    sql = "SELECT CodigoCliente,RazaoSocial,NomeFantasia,Endereco,Bairro,Cidade,UF,CEP,Telefone,Email,CGC AS CNPJ,Contato,DataInclusao,DataAlteracao,NomeUsuario FROM TB_Cliente WHERE ClienteAtivo = 1 "
-
-
-    if CodigoCliente == None and CNPJ != None:   
-        # Se apenas o CNPJ for fornecido, retorna os registros correspondentes ao CNPJ
-        sql = sql + f' AND CGC IN ({CNPJ})'
-
-    elif CodigoCliente != None and CNPJ == None:    
-        # Se apenas o Código do Cliente for fornecido, retorna os registros correspondentes ao Código do Cliente
-        sql = sql + f' AND CodigoCliente IN ({CodigoCliente})'
-
-    elif CodigoCliente != None and CNPJ != None:
-        # Se ambos os parâmetros forem fornecidos, retorna os registros correspondentes a ambos
-        sql = sql + f' AND CodigoCliente IN (${CodigoCliente}) AND CGC IN ({CNPJ})'    
-
-    Tabela = pd.read_sql(sql, cnxn, dtype={"CodigoCliente": str})    
-
-    cnxn.close()
-
-    return Tabela
 
 
 def TB_Persons():

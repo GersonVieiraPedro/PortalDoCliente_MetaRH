@@ -1,0 +1,85 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #f7f7f7;
+        font-family: "Segoe UI", Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .card {
+        background: #ffffff;
+        width: 430px;
+        padding: 40px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+        animation: fadeIn 0.6s ease;
+      }
+
+      @keyframes fadeIn {
+        0% {
+          transform: translateY(10px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .warning {
+        font-size: 60px;
+        color: #ffb300;
+        opacity: 0;
+        animation: pop 0.6s ease forwards;
+      }
+
+      @keyframes pop {
+        0% {
+          transform: scale(0.4);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      h2 {
+        color: #e09c00;
+        margin-top: 18px;
+        font-weight: 600;
+      }
+
+      p {
+        color: #555;
+        font-size: 15px;
+        margin-top: 8px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card">
+      <div class="warning">⚠</div>
+      <h2>Solicitação já iniciada</h2>
+      <p>
+        Esta solicitação já foi iniciada anteriormente por outro usuário.<br />
+        Caso necessário, entre em contato com o responsável informado no
+        sistema.
+      </p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,162 @@
+# ============================================
+# ENVIRONMENT VARIABLES (SENSITIVE DATA)
+# ============================================
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ============================================
+# PYTHON
+# ============================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Poetry
+poetry.lock
+
+# ============================================
+# DATABASES
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+
+# ============================================
+# TESTING
+# ============================================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.log
+
+# ============================================
+# TYPE CHECKING
+# ============================================
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# ============================================
+# ALEMBIC MIGRATIONS (projeto específico)
+# ============================================
+# migrations/  # Descomente se não quiser versionar migrações
+
+# ============================================
+# FRONTEND (se existir na mesma pasta)
+# ============================================
+**/frontend/node_modules/
+**/frontend/.next/
+
+# ============================================
+# BACKEND SPECIFIC
+# ============================================
+**/backend/src/Tabelas/
+
+# ============================================
+# TEMPORARY FILES
+# ============================================
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================
+# IDE / EDITOR
+# ============================================
+.vscode/
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ============================================
+# CLAUDE CODE & SESSION DOCS
+# ============================================
+.claude/
+**/.claude/
+CLAUDE.md
+**/CLAUDE.md
+./CLAUDE.md
+# Arquivos de documentação de sessão (temporários)
+COMECE_AQUI*.md
+CHECKPOINT*.md
+BREAKING_CHANGES*.md
+STATUS_IMPLEMENTACAO*.md
+CONFIGURACAO*.md
+DOCUMENTACAO*.md
+TROUBLESHOOTING*.md
+PLANO*.md
+INDICE*.md
+RESUMO*.md
+COMANDOS*.sh
+
+# ============================================
+# PROJECT SPECIFIC
+# ============================================
+frontend/src/app/Requisicao/Orcamento/Temporario/page copy.tsx
+# Scripts de seed de teste
+scripts/database/*teste*.sql
+scripts/database/*seed*.sql
+scripts/database/README_SEED*.md
+
+# ============================================
+# AZURE / CREDENTIALS
+# ============================================
+*.pem
+*.key
+*.crt
+*.cer
+*.pfx
+credentials.json
+secrets.json
